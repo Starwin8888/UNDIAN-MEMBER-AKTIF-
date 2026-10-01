@@ -6,45 +6,51 @@
 <title>Undian Member Aktif</title>
 <style>
 *{box-sizing:border-box}
-html,body{margin:0;padding:0;background:#080c18;color:#fff;font-family:Arial,sans-serif}
+html,body{margin:0;padding:0;background:#050812;color:#fff;font-family:Arial,sans-serif}
 body{min-height:100vh}
-.app{width:100%;max-width:1100px;margin:auto;background:#080c18}
-.top{padding:14px 16px 12px;background:linear-gradient(105deg,#07162f,#11152c 48%,#4b090e)}
-.title{font-size:clamp(23px,5vw,52px);font-weight:900;letter-spacing:1.5px;line-height:1.05;white-space:nowrap}
-.subtitle{font-size:clamp(10px,1.8vw,19px);line-height:1.18;margin-top:10px;letter-spacing:.5px}
-.stage{background:radial-gradient(circle at 50% 45%,#211637,#111629 52%,#080c18);padding:14px 10px 18px;display:flex;flex-direction:column;align-items:center}
-.wheelbox{position:relative;width:min(76vw,680px);aspect-ratio:1/1;flex:none}
+.app{width:100%;max-width:1400px;margin:auto;background:#070b17;box-shadow:0 0 60px rgba(0,0,0,.45)}
+.top{padding:20px 28px 18px;background:linear-gradient(110deg,#07162f 0%,#151338 48%,#4a080f 100%);border-bottom:1px solid rgba(255,255,255,.12)}
+.title{font-size:clamp(25px,4vw,52px);font-weight:900;letter-spacing:1.8px;line-height:1.05;text-shadow:0 3px 15px rgba(0,0,0,.45)}
+.subtitle{font-size:clamp(10px,1.35vw,18px);line-height:1.35;margin-top:9px;letter-spacing:.3px;color:#e9edf7}
+.stage{background:radial-gradient(circle at 50% 42%,#27204d 0%,#121a32 48%,#070b17 78%);padding:22px 20px 25px;display:flex;flex-direction:column;align-items:center}
+.wheelbox{position:relative;width:min(58vw,700px);aspect-ratio:1/1;flex:none;filter:drop-shadow(0 18px 28px rgba(0,0,0,.5))}
 canvas{width:100%;height:100%;display:block}
-.pointer{position:absolute;right:-18px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:18px solid transparent;border-bottom:18px solid transparent;border-right:34px solid #fff;filter:drop-shadow(0 2px 2px #111)}
-.winner{height:42px;padding-top:7px;color:#ffd447;font-size:clamp(16px,2.3vw,29px);font-weight:800;text-align:center}
-.spin{background:#fff;color:#111;border:0;border-radius:9px;padding:12px 62px;font-size:clamp(22px,3vw,36px);font-weight:900;cursor:pointer}
-.panel{margin:0 10px 12px;background:#171717;border:2px solid #333;border-radius:8px;overflow:hidden}
-.tabs{display:flex;gap:38px;padding:0 16px;height:58px;align-items:end;border-bottom:1px solid #333}
-.tab{font-size:clamp(16px,2.4vw,27px);font-weight:900;height:58px;display:flex;align-items:center;gap:9px;border-bottom:4px solid transparent;cursor:pointer}
-.tab.active{border-bottom-color:#fff}
-.badge{background:#777;border-radius:20px;padding:3px 11px;font-size:.65em}
-.toolbar{display:flex;flex-wrap:wrap;gap:7px;padding:9px 14px}
-.toolbar button,.editor button{background:#eee;color:#111;border:0;border-radius:7px;padding:8px 13px;font-size:clamp(11px,1.7vw,17px);font-weight:800;cursor:pointer}
-.list{margin:0 14px 14px;min-height:650px;max-height:850px;overflow:auto;background:#1d1d1d;border:2px solid #444;border-radius:8px;padding:12px 20px;font-size:clamp(14px,1.8vw,22px);line-height:1.3}
-.result{display:block;color:#ffd447;font-weight:800;padding:4px 0;border-bottom:1px solid #333;line-height:1.35}
-.editor{display:none;margin:0 14px 14px;position:relative;z-index:30}
-.editor textarea{width:100%;height:260px;display:block;background:#202020;color:#fff;border:2px solid #555;border-radius:8px;padding:12px;font-size:16px;line-height:1.35;resize:vertical}
-.editor button{margin-top:8px}
+.pointer{position:absolute;right:-19px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:19px solid transparent;border-bottom:19px solid transparent;border-right:36px solid #fff;filter:drop-shadow(0 3px 5px rgba(0,0,0,.7))}
+.winner{min-height:58px;padding:10px 20px 4px;color:#ffd447;font-size:clamp(18px,2.2vw,30px);font-weight:900;text-align:center;text-shadow:0 2px 12px rgba(255,212,71,.22)}
+.spin{background:linear-gradient(180deg,#fff,#e8e8e8);color:#111;border:0;border-radius:12px;padding:13px 76px;font-size:clamp(23px,2.8vw,35px);font-weight:900;cursor:pointer;box-shadow:0 7px 20px rgba(0,0,0,.35);transition:.15s}
+.spin:hover{transform:translateY(-2px);box-shadow:0 10px 24px rgba(0,0,0,.45)}
+.spin:active{transform:translateY(1px)}
+.panel{margin:0 18px 20px;background:linear-gradient(180deg,#171b23,#101318);border:1px solid #3a414d;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.3)}
+.tabs{display:flex;gap:42px;padding:0 22px;height:66px;align-items:end;border-bottom:1px solid #303641}
+.tab{position:relative;font-size:clamp(17px,2vw,25px);font-weight:900;height:66px;display:flex;align-items:center;gap:9px;border-bottom:4px solid transparent;cursor:pointer;color:#aeb5c2}
+.tab.active{border-bottom-color:#fff;color:#fff}
+.badge{background:#737b88;color:#fff;border-radius:20px;padding:3px 11px;font-size:.62em}
+.toolbar{display:flex;flex-wrap:wrap;gap:9px;padding:12px 18px}
+.toolbar button,.editor button{background:linear-gradient(180deg,#fff,#e5e5e5);color:#111;border:0;border-radius:8px;padding:9px 15px;font-size:clamp(11px,1.4vw,16px);font-weight:800;cursor:pointer;box-shadow:0 2px 7px rgba(0,0,0,.25)}
+.toolbar button:hover,.editor button:hover{transform:translateY(-1px)}
+.list{margin:0 18px 18px;min-height:650px;max-height:850px;overflow:auto;background:linear-gradient(180deg,#171717,#111);border:1px solid #454b55;border-radius:10px;padding:12px 18px;font-size:clamp(14px,1.45vw,20px);line-height:1.3}
+.result{display:block;color:#ffd447;font-weight:800;padding:6px 9px;border-bottom:1px solid #292d34;border-radius:5px}
+.result:hover{background:#222832}
+.editor{display:none;margin:0 18px 18px;position:relative;z-index:30}
+.editor textarea{width:100%;height:300px;display:block;background:#171b21;color:#fff;border:1px solid #555;border-radius:10px;padding:14px;font-size:16px;line-height:1.4;resize:vertical}
+.editor button{margin-top:9px}
 @media(max-width:600px){
-  .top{padding:10px 12px 9px}
-  .title{font-size:27px}
-  .subtitle{font-size:11px;line-height:1.2;margin-top:8px}
-  .stage{padding-top:12px}
-  .wheelbox{width:min(78vw,380px)}
-  .pointer{right:-14px;border-top-width:14px;border-bottom-width:14px;border-right-width:26px}
-  .winner{height:36px;font-size:17px}
-  .spin{padding:10px 55px;font-size:27px}
-  .panel{margin:0 7px 10px}
+  .top{padding:11px 12px 10px}
+  .title{font-size:25px;letter-spacing:1px}
+  .subtitle{font-size:10px;line-height:1.25;margin-top:7px}
+  .stage{padding:13px 8px 18px}
+  .wheelbox{width:min(78vw,390px)}
+  .pointer{right:-14px;border-top-width:14px;border-bottom-width:14px;border-right-width:27px}
+  .winner{min-height:42px;font-size:17px;padding-top:7px}
+  .spin{padding:10px 55px;font-size:27px;border-radius:9px}
+  .panel{margin:0 7px 10px;border-radius:9px}
   .tabs{height:52px;gap:24px;padding:0 14px}
   .tab{height:52px;font-size:17px}
-  .toolbar{padding:8px 12px}
+  .toolbar{padding:8px 12px;gap:6px}
   .toolbar button{font-size:11px;padding:8px 10px}
-  .list{min-height:500px;max-height:700px;margin:0 12px 12px;font-size:14px}
+  .list{min-height:500px;max-height:700px;margin:0 12px 12px;padding:10px 12px;font-size:14px}
+  .result{padding:5px 6px}
+  .editor{margin:0 12px 12px}
 }
 </style>
 </head>
@@ -65,7 +71,7 @@ canvas{width:100%;height:100%;display:block}
 <div class="tab active" id="resultsTab">
   Results <span class="badge" id="resultsCount">0</span>
   <button id="editWinnerBtn" title="Edit pemenang" aria-label="Edit pemenang"
-    style="position:relative;z-index:20;border:0;background:transparent;color:transparent;width:34px;height:34px;padding:0;margin-left:2px;cursor:pointer;opacity:0.01;pointer-events:auto">✎</button>
+    style="position:absolute;z-index:20;border:0;background:transparent;color:transparent;width:70px;height:52px;padding:0;cursor:pointer;opacity:0;pointer-events:auto"></button>
 </div>
 </div>
 <div class="toolbar">
@@ -144,11 +150,23 @@ document.getElementById('resultsTab').onclick=(e)=>{
   if(e.target.id!=='editWinnerBtn'){mode='results';render();}
 };
 document.getElementById('editWinnerBtn').onclick=(e)=>{
+  e.preventDefault();
   e.stopPropagation();
   mode='winner';
   render();
-  winnerInput.focus();
+  setTimeout(()=>winnerInput.focus(),50);
 };
+let editPressTimer=null;
+document.getElementById('resultsTab').addEventListener('touchstart',()=>{
+  editPressTimer=setTimeout(()=>{
+    mode='winner';
+    render();
+    setTimeout(()=>winnerInput.focus(),50);
+  },700);
+},{passive:true});
+document.getElementById('resultsTab').addEventListener('touchend',()=>{
+  if(editPressTimer) clearTimeout(editPressTimer);
+},{passive:true});
 
 document.getElementById('saveEntries').onclick=()=>{
  participants=entryInput.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
