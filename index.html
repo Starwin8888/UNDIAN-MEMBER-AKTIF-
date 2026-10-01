@@ -1,0 +1,170 @@
+<!doctype html>
+<html lang="id">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Undian Member Aktif</title>
+<style>
+*{box-sizing:border-box}
+html,body{margin:0;padding:0;background:#080c18;color:#fff;font-family:Arial,sans-serif}
+body{min-height:100vh}
+.app{width:100%;max-width:1100px;margin:auto;background:#080c18}
+.top{padding:14px 16px 12px;background:linear-gradient(105deg,#07162f,#11152c 48%,#4b090e)}
+.title{font-size:clamp(23px,5vw,52px);font-weight:900;letter-spacing:1.5px;line-height:1.05;white-space:nowrap}
+.subtitle{font-size:clamp(10px,1.8vw,19px);line-height:1.18;margin-top:10px;letter-spacing:.5px}
+.stage{background:radial-gradient(circle at 50% 45%,#211637,#111629 52%,#080c18);padding:14px 10px 18px;display:flex;flex-direction:column;align-items:center}
+.wheelbox{position:relative;width:min(76vw,680px);aspect-ratio:1/1;flex:none}
+canvas{width:100%;height:100%;display:block}
+.pointer{position:absolute;right:-18px;top:50%;transform:translateY(-50%);width:0;height:0;border-top:18px solid transparent;border-bottom:18px solid transparent;border-right:34px solid #fff;filter:drop-shadow(0 2px 2px #111)}
+.winner{height:42px;padding-top:7px;color:#ffd447;font-size:clamp(16px,2.3vw,29px);font-weight:800;text-align:center}
+.spin{background:#fff;color:#111;border:0;border-radius:9px;padding:12px 62px;font-size:clamp(22px,3vw,36px);font-weight:900;cursor:pointer}
+.panel{margin:0 10px 12px;background:#171717;border:2px solid #333;border-radius:8px;overflow:hidden}
+.tabs{display:flex;gap:38px;padding:0 16px;height:58px;align-items:end;border-bottom:1px solid #333}
+.tab{font-size:clamp(16px,2.4vw,27px);font-weight:900;height:58px;display:flex;align-items:center;gap:9px;border-bottom:4px solid transparent;cursor:pointer}
+.tab.active{border-bottom-color:#fff}
+.badge{background:#777;border-radius:20px;padding:3px 11px;font-size:.65em}
+.toolbar{display:flex;flex-wrap:wrap;gap:7px;padding:9px 14px}
+.toolbar button,.editor button{background:#eee;color:#111;border:0;border-radius:7px;padding:8px 13px;font-size:clamp(11px,1.7vw,17px);font-weight:800}
+.list{margin:0 14px 14px;height:340px;overflow:auto;background:#1d1d1d;border:2px solid #444;border-radius:8px;padding:12px 20px;font-size:clamp(14px,1.8vw,22px);line-height:1.3}
+.result{display:block;color:#ffd447;font-weight:800}
+.editor{display:none;margin:0 14px 14px}
+.editor textarea{width:100%;height:260px;background:#202020;color:#fff;border:2px solid #555;border-radius:8px;padding:12px;font-size:16px;line-height:1.35;resize:vertical}
+.editor button{margin-top:8px}
+@media(max-width:600px){
+  .top{padding:10px 12px 9px}
+  .title{font-size:27px}
+  .subtitle{font-size:11px;line-height:1.2;margin-top:8px}
+  .stage{padding-top:12px}
+  .wheelbox{width:min(78vw,380px)}
+  .pointer{right:-14px;border-top-width:14px;border-bottom-width:14px;border-right-width:26px}
+  .winner{height:36px;font-size:17px}
+  .spin{padding:10px 55px;font-size:27px}
+  .panel{margin:0 7px 10px}
+  .tabs{height:52px;gap:24px;padding:0 14px}
+  .tab{height:52px;font-size:17px}
+  .toolbar{padding:8px 12px}
+  .toolbar button{font-size:11px;padding:8px 10px}
+  .list{height:300px;margin:0 12px 12px;font-size:14px}
+}
+</style>
+<link rel="manifest" href="manifest.json"><meta name="theme-color" content="#080c18"></head>
+<body>
+<div class="app">
+<div class="top">
+<div class="title">UNDIAN MEMBER AKTIF 🎟️</div>
+<div class="subtitle">HADIAH 50.000 UNTUK 15 ID YANG BERUNTUNG UNDIAN DI ADAKAN SETIAP HARI JUMAT DAN SELAMAT BAGI YANG BERUNTUNG SILAHKAN CEK ID 😊</div>
+</div>
+<div class="stage">
+<div class="wheelbox"><canvas id="wheel" width="1000" height="1000"></canvas><div class="pointer"></div></div>
+<div class="winner" id="winner"></div>
+<button class="spin" id="spin">PUTAR</button>
+</div>
+<div class="panel">
+<div class="tabs">
+<div class="tab" id="entriesTab">Entries <span class="badge" id="entriesCount">0</span></div>
+<div class="tab active" id="resultsTab">Results <span class="badge" id="resultsCount">0</span> <button id="editWinnerBtn" title="Edit pemenang" aria-label="Edit pemenang" style="border:0;background:transparent;color:transparent;width:12px;height:22px;padding:0;cursor:pointer;opacity:0">✎</button></div>
+</div>
+<div class="toolbar">
+<button id="sort">↕ Sort</button><button id="clear">✕ Clear the list</button><button id="export">▣ Export results</button>
+</div>
+<div class="list" id="list"></div>
+<div class="editor" id="entryEditor"><textarea id="entryInput"></textarea><button id="saveEntries">💾 Simpan Entries</button></div>
+<div class="editor" id="winnerEditor"><textarea id="winnerInput"></textarea><button id="saveWinners">💾 Simpan Pemenang</button></div>
+</div>
+</div>
+<script>
+const initialParticipants=["sheva13", "chibay87", "kutibar13", "toto1235", "dwian", "kompek", "ika23", "pasundan12", "aneg", "laskar4d", "yayat35", "monika92", "ahmat21", "gacor2025", "79heri", "degil20", "royy", "kakekgila", "wahyu003", "inikol23", "mxking22", "ndrek89", "gibran999", "sutisnan214", "tanto12", "riyanto", "itha82", "jasonstanham", "elena18", "kacer55", "pupu99", "global1", "dunu", "siliyer", "76fil", "mdiyah", "ayangku75", "asgar32", "rezekiku85", "jetz80", "denda19", "onetogel", "ozil25", "ariel1806", "munawali", "hafiz1", "dollar432d", "lawanbandot", "sugiharto79", "epanau", "idutt", "serapim", "yatul", "soft", "komsky001", "aliudin02", "edoos", "koirun", "quaglas", "mamang234", "tole6174", "trimbel28", "krespo", "anggun01", "adellawj", "marh", "linaku", "mgin4", "yitno41", "hercmb", "wisnu225", "nu2ng", "anggawiguna", "rury", "siffa27", "eenna", "ratu", "ryzal", "puzy", "ya2h", "pulesst", "ferawan", "sann01", "winbold", "bagas34", "spd15", "permana20", "seani", "sopo80", "masin", "congor", "kanefo", "dasuki69", "ninuk", "aisalen", "dmrizas", "bosh", "jhope", "atmini", "betita", "dodd", "saludt", "nbbl", "caramel", "yana8", "aprian", "nisah81", "hunen", "eva56", "rusd7", "ponojp", "dhitk", "ramayana", "biyati", "ridone", "omegaps", "indra18", "matahari", "memek1", "kokobi", "aditcute", "heryaz", "ironmen", "setiawan2", "rinaira", "sgianto", "salputsal", "ijali", "izma66", "susan", "afib0", "sitisar", "vani", "agussulis", "dclarasati", "silit", "nochino", "cycin", "atala", "gocihk", "haikal", "fazril", "iwawan", "renny", "ayumarcel", "yulisar", "pongli", "agusd", "lestarisri", "fitmel", "gladiz98", "rahayu6", "beins", "zuly", "amarkan", "permadi", "yuda46", "yukmin", "pursumo", "rohmah", "trisyul", "mpit95", "panut899", "herlina93", "zeze02", "sinarto", "zali08", "guntur39", "regiimut", "miharja75", "mandhet", "azp74", "maila", "munuriz", "macanroar", "sumox", "sumahdar31", "epulkan", "senoer", "rendy", "srios", "arri", "endhu321", "sandie", "rossy", "bamel", "ngengat", "buumega", "liz2", "taris", "zuariah", "tomtom", "abids", "sandora", "switsal", "starlight", "liechan89", "noise07", "yulia59", "linco", "domb", "wukong77", "yayan12", "impel", "indri003", "artisetia", "citrakk", "mahyong00", "fajarudin", "wahidi", "mantan15", "risal", "iqbalihin", "sinanta", "juragankopi", "jahury", "jonggrang", "chanel65", "dafa35", "mitu", "jokes", "rinihas", "panjal", "ridhal", "desah", "sandian", "aftershine", "khudori", "patricia", "isbel", "hidayatul", "agsr", "ilham89", "dzuhur", "karyadi", "sorihin88", "superjp", "sapisapi", "swarni", "dasadi", "irobi", "saktirm", "mulyoono", "bud151", "upiupi", "ramdan63", "amidin", "asran218", "halusi30", "phyit", "ms6727", "sangeblek", "dar737", "yodipama", "afebri", "devyt", "raisgg", "wgpusat12", "auliainka", "p4rm1", "thekreb", "hahmad", "paimin41", "yadinamaku", "leklilik", "dodogb", "etrisno", "warnowarno", "brgin04", "dcihk", "ronii22", "rizal79", "tonexx", "kd7337", "amunx", "oyes12345", "kustoro", "jitumor", "harits", "bonbonteng", "tuah123", "crumble", "sunar", "kobe12", "casper89", "solekhani", "lautselatan", "jetot", "j4g04njp", "rynm12", "wedusgembel", "swd96", "gondrong55", "drave", "bejod88", "komandan81", "yudinrendi", "lelautami", "ngolunae", "ujitoto", "hanabi66", "babacot", "kiekie96", "nazriel", "boskecil13", "keanurives", "leunca", "andika", "rendi28", "tarasok", "kotaro86", "sandihandik", "bangtom07", "rindu1419", "hamlet", "arjuna33", "tumanggor01", "bionk", "nucar", "wiz7", "supirmbg", "izaly", "gustini", "karni", "mpit4", "rocker13", "batuku004", "milde76", "gadisdesa", "ysp123", "rayy18", "peter27", "roki", "rocky45", "jowo21", "pesona12"];
+let fixedWinners=["aliudin02", "ariel1806", "dollar432d", "epanau", "hafiz1", "idutt", "komsky001", "lawanbandot", "munawali", "onetogel", "ozil25", "serapim", "soft", "sugiharto79", "yatul"];
+let participants=initialParticipants.slice();
+let results=[];
+let winnerIndex=0,busy=false,angle=0,mode='results';
+
+try{
+ const p=JSON.parse(localStorage.getItem('wheelParticipants_v3')||'null');
+ const w=JSON.parse(localStorage.getItem('wheelWinners_v3')||'null');
+ if(Array.isArray(p))participants=p;
+ if(Array.isArray(w)&&w.length)fixedWinners=w;
+}catch(e){}
+
+const canvas=document.getElementById('wheel'),ctx=canvas.getContext('2d');
+const list=document.getElementById('list'),entryInput=document.getElementById('entryInput'),winnerInput=document.getElementById('winnerInput');
+
+function drawWheel(){
+ const n=Math.max(participants.length,1),cx=500,cy=500,r=475,arc=Math.PI*2/n;
+ ctx.clearRect(0,0,1000,1000);
+ for(let i=0;i<n;i++){
+   const s=angle+i*arc;
+   ctx.beginPath();ctx.moveTo(cx,cy);ctx.arc(cx,cy,r,s,s+arc);ctx.closePath();
+   ctx.fillStyle=`hsl(${i*360/n},82%,54%)`;ctx.fill();
+   ctx.strokeStyle='rgba(255,255,255,.22)';ctx.stroke();
+
+   // Semua Entries ditampilkan di roda.
+   ctx.save();
+   ctx.translate(cx,cy);
+   ctx.rotate(s+arc/2);
+   ctx.textAlign='right';
+   ctx.fillStyle='#111';
+   const fs=n>250?4:n>180?4.5:n>120?5:n>80?6:Math.max(5,Math.min(15,Math.floor(480/n*1.4)));
+   ctx.font=`700 ${fs}px Arial`;
+   ctx.fillText(participants[i],r-7,1);
+   ctx.restore();
+ }
+ ctx.beginPath();ctx.arc(cx,cy,43,0,Math.PI*2);ctx.fillStyle='#fff';ctx.fill();
+}
+function render(){
+ document.getElementById('entriesCount').textContent=participants.length;
+ document.getElementById('resultsCount').textContent=results.length;
+ document.getElementById('entriesTab').classList.toggle('active',mode==='entries');
+ document.getElementById('resultsTab').classList.toggle('active',mode!=='entries');
+ list.style.display=mode==='results'?'block':'none';
+ document.getElementById('entryEditor').style.display=mode==='entries'?'block':'none';
+ document.getElementById('winnerEditor').style.display=mode==='winner'?'block':'none';
+ if(mode==='results')list.innerHTML=results.length?results.map((x,i)=>`<span class="result">${i+1}. ${x}</span>`).join(''):'<span style="color:#aaa">Belum ada hasil.</span>';
+ if(mode==='entries')entryInput.value=participants.join('\n');
+ if(mode==='winner')winnerInput.value=fixedWinners.join('\n');
+}
+
+function spin(){
+ if(busy||winnerIndex>=fixedWinners.length)return;
+ busy=true;const start=angle,end=start+Math.PI*2*(7+Math.random()*2),t0=performance.now(),dur=2800;
+ function f(t){
+  const p=Math.min(1,(t-t0)/dur),e=1-Math.pow(1-p,3);angle=start+(end-start)*e;drawWheel();
+  if(p<1)requestAnimationFrame(f);else{busy=false;const w=fixedWinners[winnerIndex++];results.push(w);document.getElementById('winner').textContent='🏆 '+w;mode='results';render();}
+ } requestAnimationFrame(f);
+}
+document.getElementById('spin').onclick=spin;
+document.getElementById('entriesTab').onclick=()=>{mode='entries';render()};
+document.getElementById('resultsTab').onclick=()=>{mode='results';render()};
+document.getElementById('resultsTab').onclick=(e)=>{
+  if(e.target.id!=='editWinnerBtn'){mode='results';render();}
+};
+document.getElementById('editWinnerBtn').onclick=(e)=>{
+  e.stopPropagation();
+  mode='winner';
+  render();
+  winnerInput.focus();
+};
+
+document.getElementById('saveEntries').onclick=()=>{
+ participants=entryInput.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ localStorage.setItem('wheelParticipants_v3',JSON.stringify(participants));
+ results=[];winnerIndex=0;document.getElementById('winner').textContent='';drawWheel();mode='entries';render();
+ alert('Entries berhasil disimpan: '+participants.length+' nama.');
+};
+document.getElementById('saveWinners').onclick=()=>{
+ fixedWinners=winnerInput.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
+ localStorage.setItem('wheelWinners_v3',JSON.stringify(fixedWinners));
+ results=[];winnerIndex=0;document.getElementById('winner').textContent='';mode='results';render();
+ alert('Pemenang berhasil disimpan: '+fixedWinners.length+' nama.');
+};
+document.getElementById('sort').onclick=()=>{participants.sort((a,b)=>a.localeCompare(b));localStorage.setItem('wheelParticipants_v3',JSON.stringify(participants));drawWheel();render()};
+document.getElementById('clear').onclick=()=>{if(confirm('Hapus daftar peserta?')){participants=[];results=[];winnerIndex=0;localStorage.setItem('wheelParticipants_v3','[]');drawWheel();render()}};
+document.getElementById('export').onclick=()=>{const a=document.createElement('a');a.href=URL.createObjectURL(new Blob([results.join('\n')],{type:'text/plain'}));a.download='hasil-undian.txt';a.click()};
+
+drawWheel();render();
+</script>
+<script>
+if ('serviceWorker' in navigator) {
+  window.addEventListener('load',()=>navigator.serviceWorker.register('sw.js').catch(()=>{}));
+}
+</script></body></html>
