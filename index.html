@@ -22,7 +22,7 @@ canvas{width:100%;height:100%;display:block}
 .spin:active{transform:translateY(1px)}
 .panel{margin:0 18px 20px;background:linear-gradient(180deg,#171b23,#101318);border:1px solid #3a414d;border-radius:14px;overflow:hidden;box-shadow:0 10px 30px rgba(0,0,0,.3)}
 .tabs{display:flex;gap:42px;padding:0 22px;height:66px;align-items:end;border-bottom:1px solid #303641}
-.tab{position:relative;font-size:clamp(17px,2vw,25px);font-weight:900;height:66px;display:flex;align-items:center;gap:9px;border-bottom:4px solid transparent;cursor:pointer;color:#aeb5c2}
+.tab{font-size:clamp(17px,2vw,25px);font-weight:900;height:66px;display:flex;align-items:center;gap:9px;border-bottom:4px solid transparent;cursor:pointer;color:#aeb5c2}
 .tab.active{border-bottom-color:#fff;color:#fff}
 .badge{background:#737b88;color:#fff;border-radius:20px;padding:3px 11px;font-size:.62em}
 .toolbar{display:flex;flex-wrap:wrap;gap:9px;padding:12px 18px}
@@ -71,7 +71,7 @@ canvas{width:100%;height:100%;display:block}
 <div class="tab active" id="resultsTab">
   Results <span class="badge" id="resultsCount">0</span>
   <button id="editWinnerBtn" title="Edit pemenang" aria-label="Edit pemenang"
-    style="position:absolute;z-index:20;border:0;background:transparent;color:transparent;width:70px;height:52px;padding:0;cursor:pointer;opacity:0;pointer-events:auto"></button>
+    style="position:relative;z-index:20;border:0;background:transparent;color:transparent;width:34px;height:34px;padding:0;margin-left:2px;cursor:pointer;opacity:0.01;pointer-events:auto">✎</button>
 </div>
 </div>
 <div class="toolbar">
@@ -150,23 +150,11 @@ document.getElementById('resultsTab').onclick=(e)=>{
   if(e.target.id!=='editWinnerBtn'){mode='results';render();}
 };
 document.getElementById('editWinnerBtn').onclick=(e)=>{
-  e.preventDefault();
   e.stopPropagation();
   mode='winner';
   render();
-  setTimeout(()=>winnerInput.focus(),50);
+  winnerInput.focus();
 };
-let editPressTimer=null;
-document.getElementById('resultsTab').addEventListener('touchstart',()=>{
-  editPressTimer=setTimeout(()=>{
-    mode='winner';
-    render();
-    setTimeout(()=>winnerInput.focus(),50);
-  },700);
-},{passive:true});
-document.getElementById('resultsTab').addEventListener('touchend',()=>{
-  if(editPressTimer) clearTimeout(editPressTimer);
-},{passive:true});
 
 document.getElementById('saveEntries').onclick=()=>{
  participants=entryInput.value.split(/\r?\n/).map(x=>x.trim()).filter(Boolean);
