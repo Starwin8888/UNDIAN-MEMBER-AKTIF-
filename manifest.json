@@ -1,0 +1,11 @@
+{
+  "name": "Undian Member Aktif",
+  "short_name": "Undian Member",
+  "start_url": "./index.html",
+  "scope": "./",
+  "display": "standalone",
+  "background_color": "#080c18",
+  "theme_color": "#080c18",
+  "orientation": "portrait",
+  "description": "Aplikasi Undian Member Aktif"
+}
